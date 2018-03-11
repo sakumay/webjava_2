@@ -7,6 +7,7 @@ import productData.SelectionMenuData;
 
 public class SelectItemPrice {
   int ItemPrice = 0;
+  String ItemName = null;
 
   public boolean select(MenuData menuData, boolean errorMassageFlg) {
     int choseNumber = 0;
@@ -36,6 +37,7 @@ public class SelectItemPrice {
       if(menuData.getSize() < choseNumber || choseNumber == 0) {
       }else {
         ItemPrice = menuData.getPrice(choseNumber-1);
+        ItemName = menuData.getName(choseNumber-1);
         return true;
       }
     }
@@ -72,6 +74,7 @@ public class SelectItemPrice {
       if(selectionMenuData.getSize() < choseNumber || choseNumber == 0) {
       }else {
         ItemPrice = selectionMenuData.getPrice(choseNumber-1);
+        ItemName = selectionMenuData.getName(choseNumber-1);
         return true;
       }
     }
@@ -106,6 +109,7 @@ public class SelectItemPrice {
       if(additionalData.getSize() < choseNumber || choseNumber == 0) {
       }else {
         ItemPrice = additionalData.getPrice(choseNumber-1);
+        ItemName = additionalData.getName(choseNumber-1);
         return true;
       }
     }
@@ -124,6 +128,11 @@ public class SelectItemPrice {
       input = "b";
     }
     return input;
+  }
+
+
+  public String getNeme() {
+    return ItemName;
   }
 
 }

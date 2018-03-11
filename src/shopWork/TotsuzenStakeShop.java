@@ -1,7 +1,7 @@
 package shopWork;
 
-import java.util.Scanner;
 import productData.MenuData;
+import productData.OrderData;
 import productData.SelectionMenuData;
 
 public class TotsuzenStakeShop extends Shop {
@@ -10,15 +10,12 @@ public class TotsuzenStakeShop extends Shop {
     super(shopName);
   }
 
+  MenuData menuData = new MenuData();
+  SelectionMenuData selectionMenuData = new SelectionMenuData();
+  int totalFee = 0;
+
   @Override
-  public int work() {
-    // 突然ステーキの処理を記載
-    System.out.println("◆◆" + shopName + "へようこそ◆◆");
-
-
-    MenuData menuData = new MenuData();
-    SelectionMenuData selectionMenuData = new SelectionMenuData();
-
+  public void setMenu(){
     menuData.addData("リブロース", 7);
     menuData.addData("ヒレ", 9);
     menuData.addData("国産牛サーロイン", 10);
@@ -29,33 +26,26 @@ public class TotsuzenStakeShop extends Shop {
     selectionMenuData.addData("ライル&スモールサラダセット", 350);
     selectionMenuData.addData("スープ&スモールサラダセット", 350);
     selectionMenuData.addData("ライル&スープ&スモールサラダセット", 530);
+  }
 
+  @Override
+  public String orderCheck(OrderData orderData) {
+    int meatFee = 0;
+    // 突然ステーキの処理を記載
+    System.out.println("◆◆"+shopName+"へようこそ◆◆");
+    //肉の種類を確認
+    String message1 = "\r\nお好きな肉の種類を選び、番号を入力してください\r\n";
+    meatFee = checkMenuData(menuData, message1, orderData);
+    if(meatFee < 0) {
+      orderData.setOrderMessage("\r\nなにも注文をしなかった\r\n");
+      return null;
+    }else {
+      orderData.setOrderMessage(shopName.concat("にて\r\n"));
+    }
+    //肉のグラム数を確認
     boolean continueFlg = true;
     boolean errorMassageFlg = false;
     int choseNumber = 0;
-    int fee = 0;
-    int meatFee = 0;
-
-    //肉の種類を確認
-    while (continueFlg) {
-      System.out.println("\r\nお好きな肉の種類を選び、番号を入力してください\r\n");
-
-      SelectItemPrice selectItem = new SelectItemPrice();
-      if(selectItem.select(menuData,errorMassageFlg)) {
-        if(selectItem.getPrice() < 0) {
-          return 0;
-        }else {
-          meatFee = selectItem.getPrice();
-          continueFlg = false;
-        }
-      }else {
-        errorMassageFlg = true;
-      }
-    }
-
-    //肉のグラム数を確認
-    continueFlg = true;
-    errorMassageFlg = false;
     while (continueFlg) {
       System.out.println("◆◆お好みのグラム数をお選びください◆◆");
       if (errorMassageFlg) {
@@ -73,57 +63,39 @@ public class TotsuzenStakeShop extends Shop {
         errorMassageFlg = true;
       } else {
         continueFlg = false;
-        fee += meatFee * choseNumber;
+        totalFee += meatFee * choseNumber;
+        String addMessage = " "+input+"g";
+        orderData.addOrderMessage(orderData.getOrder().concat(addMessage));
       }
     }
-
     //セットメニューを確認
-    continueFlg = true;
-    errorMassageFlg = false;
-    while (continueFlg) {
-      System.out.println("\r\nお好きなセットメニューを選び、番号を入力してください\r\n");
-
-      SelectItemPrice selectItem = new SelectItemPrice();
-      if(selectItem.select(selectionMenuData,errorMassageFlg)) {
-        if(selectItem.getPrice() < 0) {
-          continueFlg = false;
-        }else {
-          fee += selectItem.getPrice();
-          continueFlg = false;
-        }
-      }else {
-        errorMassageFlg = true;
-      }
-
+    String message2 = "\r\nお好きなセットメニューを選び、番号を入力してください\r\n";
+    totalFee += checkSelectionMenuData(selectionMenuData, message2, orderData);
+    if(orderData.getOrder() !=null) {
+      orderData.addOrderMessage("\r\n"+orderData.getOrder());
     }
+    return orderData.getOrderMessage();
+  }
 
+  @Override
+  public int doAccounting() {
     //会計
     System.out.println("\r\n◆◆  お会計  ◆◆");
-    System.out.println("小計　｜" + fee + "円");
-    int consumptionTax = (int) (fee * 0.08);
+    System.out.println("小計　｜" + totalFee + "円");
+    int consumptionTax = (int) (totalFee * 0.08);
     System.out.println("消費税｜" + consumptionTax + "円");
-    System.out.println("合計　｜" + (fee + consumptionTax) + "円");
+    System.out.println("合計　｜" + (totalFee + consumptionTax) + "円");
     System.out.println("となります");
 
     try {
-      Thread.sleep(4000);
+      Thread.sleep(3000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
 
     System.out.println("\r\n◆◆" + shopName + "へのご利用ありがとうございました◆◆");
     System.out.println("◆◆またのご来店をお待ちしております◆◆");
-    return fee + consumptionTax;
-  }
-
-  private String getInputData() {
-    Scanner scan = new Scanner(System.in);
-    String input = scan.next();
-
-    if (input.isEmpty()) {
-      input = "b";
-    }
-    return input;
+    return totalFee + consumptionTax;
   }
 
 }
