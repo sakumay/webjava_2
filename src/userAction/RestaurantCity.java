@@ -5,7 +5,6 @@ public class RestaurantCity {
   public static void main(String[] args) {
 
     int totalFee = 0;
-//    Factory factory = new RestaurantStores();
 
     System.out.println("◆◆　RestaurantCity　◆◆");
     System.out.println("◆◆飲食店街へようこそ◆◆");

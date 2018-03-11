@@ -3,6 +3,7 @@ package userAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import productData.OrderData;
 import shopWork.Factory;
 import shopWork.Shop;
 import shopWork.ShopFactory;
@@ -33,19 +34,15 @@ public class Eater {
         number++;
       }
       System.out.print("e）選択を終了する\r\n");
-
       if(errorMassageFlg) {
         System.out.println("\r\n[!]入力コマンドが正しくありませんでした[!]");
       }
 
       System.out.print("\r\n番号を入力してください　＞ ");
-
       String input = getInputData();
-
       if(input.equals("e")) {
         continueFlg = false;
       }else {
-
         try {
           choseNumber = Integer.parseInt(input);
         }catch(NumberFormatException error) {
@@ -63,7 +60,27 @@ public class Eater {
           if (selectShop == null) {
 
           }else {
-            totalFee += selectShop.work();
+            selectShop.setMenu();
+            OrderData orderData = new OrderData();
+            String message = selectShop.orderCheck(orderData);
+            if(message == null) {
+              System.out.println("\r\nなにも注文をしなかった\r\n");
+
+            }else {
+              System.out.print("\r\n");
+              System.out.print(message);
+
+              try {
+                Thread.sleep(1000);
+                System.out.print("\r\nを食べた\r\n");
+                Thread.sleep(3000);
+              } catch (InterruptedException e1) {
+                // TODO 自動生成された catch ブロック
+                e1.printStackTrace();
+              }
+              totalFee += selectShop.doAccounting();
+
+            }
           }
         }
       }
@@ -78,8 +95,6 @@ public class Eater {
     if(input.isEmpty()) {
       input = "b";
     }
-//    scan.close();
     return input;
-
   }
 }
