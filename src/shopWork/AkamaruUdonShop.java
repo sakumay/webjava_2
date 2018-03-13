@@ -58,7 +58,7 @@ public class AkamaruUdonShop extends Shop {
       orderData.addOrderMessage("\r\n"+orderData.getOrder());
     }
 
-    //追加メニューの確
+    //追加メニューの確認
     String message3 = "\r\nお好きな追加メニューを選び、番号を入力してください\r\n";
     totalFee += checkAdditionalMenuData(additionalData, message3, orderData);
     if(orderData.getOrder() !=null) {
